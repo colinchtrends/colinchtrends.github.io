@@ -29,7 +29,7 @@ permalink: /tags/
  <div class="tag-title" id="{{ this_tag }}">
   {{ this_tag }}
  </div>
-  <ul class="tag-post-list" style="display:none;">
+  <ul>
   {% for post in site.tags[this_tag] %}
   {% if post.title != null %}
    <li class="tag-post">
@@ -49,10 +49,24 @@ permalink: /tags/
 {% endfor %}
 
 <script>
-  document.querySelectorAll('.tag-index a').forEach(function(a) {
-    a.addEventListener('click', function() {
-      const tagPostList = document.querySelector(`.tag-post-list[id="${a.href.substr(1)}"]`);
-      tagPostList.style.display = 'block';
+  function search() {
+    const searchInput = document.querySelector('#search-input');
+    const searchResult = document.querySelector('#search-result');
+    const searchTerm = searchInput.value.trim();
+    if (searchTerm === '') {
+      searchResult.innerHTML = '';
+      return;
+    }
+
+    const posts = document.querySelectorAll('.tag-post');
+    const filteredPosts = posts.filter(function(post) {
+      return post.querySelector('.tag-post-title').textContent.includes(searchTerm);
     });
-  });
+
+    searchResult.innerHTML = filteredPosts.map(function(post) {
+      return `<li><a href="${post.querySelector('a').href}">${post.querySelector('.tag-post-title').textContent}</a></li>`;
+    }).join('');
+  }
+
+  document.querySelector('#search-button').addEventListener('click', search);
 </script>
