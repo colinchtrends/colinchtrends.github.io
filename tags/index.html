@@ -56,3 +56,34 @@ permalink: /tags/
   </article>
 {% endunless %}
 {% endfor %}
+
+
+{% assign posts = site.posts | sort %}
+
+<div class="search">
+  <input type="text" id="search-input" placeholder="검색">
+  <button id="search-button">검색</button>
+  <ul id="search-result"></ul>
+</div>
+
+<script>
+  function search() {
+    const searchInput = document.querySelector('#search-input');
+    const searchResult = document.querySelector('#search-result');
+    const searchTerm = searchInput.value.trim();
+    if (searchTerm === '') {
+      searchResult.innerHTML = '';
+      return;
+    }
+
+    const filteredPosts = posts.filter(function(post) {
+      return post.title.toLowerCase().includes(searchTerm.toLowerCase());
+    });
+
+    searchResult.innerHTML = filteredPosts.map(function(post) {
+      return `<li><a href="${post.url | prepend: site.baseurl}">${post.title}</a></li>`;
+    }).join('');
+  }
+
+  document.querySelector('#search-button').addEventListener('click', search);
+</script>
