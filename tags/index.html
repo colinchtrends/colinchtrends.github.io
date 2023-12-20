@@ -55,4 +55,25 @@ permalink: /tags/
       tagPostList.style.display = 'block';
     });
   });
+
+  function search() {
+    const searchInput = document.querySelector('#search-input');
+    const searchResult = document.querySelector('#search-result');
+    const searchTerm = searchInput.value.trim();
+    if (searchTerm === '') {
+      searchResult.innerHTML = '';
+      return;
+    }
+
+    const posts = document.querySelectorAll('.tag-post-list .tag-post');
+    const filteredPosts = posts.filter(function(post) {
+      return post.querySelector('.tag-post-title').textContent.toLowerCase().includes(searchTerm.toLowerCase());
+    });
+
+    searchResult.innerHTML = filteredPosts.map(function(post) {
+      return `<li><a href="${post.querySelector('a').href}">${post.querySelector('.tag-post-title').textContent}</a></li>`;
+    }).join('');
+  }
+
+  document.querySelector('#search-button').addEventListener('click', search);
 </script>
