@@ -4,12 +4,19 @@ title: Tags
 permalink: /tags/
 ---
 
-{% assign tags_list = site.tags | sort %}
+{% capture site_tags %}
+{% for tag in site.tags %}
+{{ tag | first }}{% unless forloop.last %},{% endunless %}
+{% endfor %}
+{% endcapture %}
+
+{% assign tags_list = site_tags | split:',' | sort %}
 
 <div class="tag-index">
  <ul>
-  {% for item in tags_list %}
+  {% for item in (0..site.tags.size) %}
   {% unless forloop.last %}
+   {% capture this_tag %}{{ tags_list[item] | strip_newlines }}{% endcapture %}
    <li>
     <a href="#{{ this_tag }}">
      <span>{{ this_tag }}</span>
@@ -37,7 +44,7 @@ permalink: /tags/
     <a href="{{ post.link }}">
     {% else %}
     <a href="{{ post.url | prepend: site.baseurl }}">
-    {% endif %}
+    {% endif %} 
      <span class="tag-post-title">{{ post.title }}</span>
     </a>
    </li>
@@ -47,26 +54,3 @@ permalink: /tags/
  </article>
 {% endunless %}
 {% endfor %}
-
-<script>
-  function search() {
-    const searchInput = document.querySelector('#search-input');
-    const searchResult = document.querySelector('#search-result');
-    const searchTerm = searchInput.value.trim();
-    if (searchTerm === '') {
-      searchResult.innerHTML = '';
-      return;
-    }
-
-    const posts = document.querySelectorAll('.tag-post');
-    const filteredPosts = posts.filter(function(post) {
-      return post.querySelector('.tag-post-title').textContent.includes(searchTerm);
-    });
-
-    searchResult.innerHTML = filteredPosts.map(function(post) {
-      return `<li><a href="${post.querySelector('a').href}">${post.querySelector('.tag-post-title').textContent}</a></li>`;
-    }).join('');
-  }
-
-  document.querySelector('#search-button').addEventListener('click', search);
-</script>
